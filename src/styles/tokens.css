@@ -1,0 +1,93 @@
+/* ============================================================
+   Nossa História — identidade visual
+   Vermelho · vinho · branco cremoso. Ouro só onde quase não se vê.
+   ============================================================ */
+
+:root {
+  /* — Vermelhos e vinhos (capa, títulos, ornamentos) — */
+  --vinho-900: #2b060d;
+  --vinho-800: #3d0a12;
+  --vinho-700: #56101b;
+  --vinho-600: #6b1220;
+  --vermelho-500: #8c1b28;
+  --vermelho-400: #a32633;
+  --vermelho-queimado: #b8412f;
+  --rosa-queimado: #c9756c;
+  --rosa-papel: #f0ddd6;
+
+  /* — Papel — */
+  --papel-100: #fdfaf6;
+  --papel-200: #f8f1e9;
+  --papel-300: #f2e8dd;
+  --papel-400: #e8dccd;
+  --papel-sombra: #d8c8b6;
+
+  /* — Tinta — */
+  --tinta-900: #241a17;
+  --tinta-700: #3a2c27;
+  --tinta-500: #5c4a43;
+  --tinta-300: #8a7a72;
+  --tinta-200: #a89a92;
+
+  /* — Ouro (discretíssimo) — */
+  --ouro: #c9a75e;
+  --ouro-claro: #e6d3a3;
+  --ouro-escuro: #8f7436;
+
+  /* — Ambiente — */
+  --mesa-escura: #14080a;
+  --mesa: #1d0c0f;
+  --mesa-clara: #2a1216;
+
+  /* — Tipografia — */
+  --serif-titulo: 'Cormorant Garamond', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --serif-texto: 'EB Garamond', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --manuscrita: 'Caveat', 'Segoe Script', 'Bradley Hand', cursive;
+
+  /* — Ritmo — */
+  --lento: 1400ms;
+  --medio: 900ms;
+  --rapido: 520ms;
+  --curva: cubic-bezier(0.22, 0.61, 0.24, 1);
+  --curva-papel: cubic-bezier(0.38, 0.01, 0.2, 1);
+
+  /* — Sombras — */
+  --sombra-livro:
+    0 2px 4px rgba(0, 0, 0, 0.28),
+    0 12px 28px rgba(0, 0, 0, 0.42),
+    0 42px 90px rgba(0, 0, 0, 0.5);
+  --sombra-pagina: 0 1px 2px rgba(80, 50, 40, 0.1), 0 10px 24px rgba(60, 30, 25, 0.12);
+  --sombra-foto: 0 1px 2px rgba(60, 35, 30, 0.2), 0 10px 22px rgba(60, 35, 30, 0.22);
+}
+
+/* Temperatura da página — muda a luz sem mudar o papel. */
+[data-mood='quente'] {
+  --luz: rgba(204, 132, 92, 0.16);
+  --luz-2: rgba(178, 66, 52, 0.07);
+  --papel: var(--papel-200);
+}
+[data-mood='claro'] {
+  --luz: rgba(255, 246, 235, 0.3);
+  --luz-2: rgba(214, 170, 150, 0.05);
+  --papel: var(--papel-100);
+}
+[data-mood='neutro'] {
+  --luz: rgba(226, 202, 184, 0.16);
+  --luz-2: rgba(140, 90, 80, 0.05);
+  --papel: var(--papel-200);
+}
+[data-mood='frio'] {
+  --luz: rgba(196, 204, 216, 0.2);
+  --luz-2: rgba(80, 96, 120, 0.06);
+  --papel: var(--papel-300);
+}
+[data-mood='escuro'] {
+  --luz: rgba(120, 90, 90, 0.1);
+  --luz-2: rgba(30, 12, 16, 0.12);
+  --papel: var(--papel-400);
+}
+[data-mood='esperanca'] {
+  --luz: rgba(255, 228, 196, 0.3);
+  --luz-2: rgba(201, 167, 94, 0.08);
+  --papel: var(--papel-100);
+}

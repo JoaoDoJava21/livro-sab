@@ -1,0 +1,261 @@
+/* ============================================================
+   Interface — discreta, quase parte do livro
+   ============================================================ */
+
+.ui {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  padding: max(14px, env(safe-area-inset-top, 0px)) 16px max(14px, env(safe-area-inset-bottom, 0px));
+}
+
+.ui > * {
+  pointer-events: auto;
+}
+
+.nav {
+  position: absolute;
+  left: 50%;
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 3vw, 30px);
+}
+
+.nav-botao {
+  font-family: var(--serif-titulo);
+  font-size: clamp(0.62rem, 1.4vw, 0.7rem);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(236, 216, 198, 0.52);
+  padding: 0.7em 0.4em;
+  transition: color var(--rapido) var(--curva), transform var(--rapido) var(--curva);
+  white-space: nowrap;
+}
+
+.nav-botao:hover:not(:disabled) {
+  color: var(--ouro-claro);
+}
+
+.nav-botao:disabled {
+  opacity: 0.22;
+  cursor: default;
+}
+
+.indicador {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  min-width: 128px;
+}
+
+.indicador-texto {
+  font-family: var(--serif-titulo);
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(236, 216, 198, 0.42);
+  white-space: nowrap;
+}
+
+.indicador-barra {
+  width: 100%;
+  height: 1px;
+  background: rgba(236, 216, 198, 0.16);
+  position: relative;
+  overflow: hidden;
+}
+
+.indicador-progresso {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: linear-gradient(90deg, var(--vermelho-400), var(--ouro));
+  transition: width var(--lento) var(--curva);
+}
+
+/* Controles de som, canto superior direito. */
+.controles {
+  position: absolute;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  right: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.controle {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: rgba(236, 216, 198, 0.46);
+  transition: color var(--rapido) var(--curva), background var(--rapido) var(--curva);
+}
+
+.controle:hover,
+.controle[aria-pressed='true'] {
+  color: var(--ouro-claro);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.controle svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* Painel de ajustes. */
+.painel {
+  position: absolute;
+  top: calc(54px + env(safe-area-inset-top, 0px));
+  right: 14px;
+  width: min(260px, calc(100vw - 28px));
+  padding: 16px 18px 18px;
+  background: rgba(24, 10, 13, 0.92);
+  border: 1px solid rgba(201, 167, 94, 0.18);
+  border-radius: 6px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+  color: rgba(240, 226, 210, 0.82);
+}
+
+.painel h2 {
+  font-family: var(--serif-titulo);
+  font-size: 0.62rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(201, 167, 94, 0.72);
+  margin: 0 0 12px;
+  font-weight: 400;
+}
+
+.painel-linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+  font-size: 0.86rem;
+}
+
+.painel-linha + .painel-linha {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.interruptor {
+  position: relative;
+  width: 38px;
+  height: 20px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background var(--rapido) var(--curva);
+  flex: none;
+}
+
+.interruptor[aria-checked='true'] {
+  background: rgba(163, 38, 51, 0.75);
+  border-color: rgba(201, 167, 94, 0.3);
+}
+
+.interruptor::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(244, 232, 216, 0.9);
+  transition: transform var(--rapido) var(--curva);
+}
+
+.interruptor[aria-checked='true']::after {
+  transform: translateX(18px);
+}
+
+.painel input[type='range'] {
+  width: 110px;
+  accent-color: var(--vermelho-400);
+  background: transparent;
+}
+
+.painel-nota {
+  margin: 12px 0 0;
+  font-size: 0.7rem;
+  line-height: 1.55;
+  color: rgba(236, 216, 198, 0.42);
+  font-style: italic;
+}
+
+/* Convite discreto para ligar o som. */
+.ativar-som {
+  position: absolute;
+  bottom: calc(58px + env(safe-area-inset-bottom, 0px));
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.6em 1.1em;
+  border-radius: 999px;
+  border: 1px solid rgba(201, 167, 94, 0.24);
+  background: rgba(24, 10, 13, 0.6);
+  backdrop-filter: blur(8px);
+  font-family: var(--serif-titulo);
+  font-size: 0.62rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(236, 216, 198, 0.7);
+  transition: color var(--rapido) var(--curva), border-color var(--rapido) var(--curva);
+}
+
+.ativar-som:hover {
+  color: var(--ouro-claro);
+  border-color: rgba(201, 167, 94, 0.5);
+}
+
+/* Dica de navegação, aparece uma vez e some. */
+.dica {
+  position: absolute;
+  left: 50%;
+  bottom: calc(62px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  font-family: var(--serif-texto);
+  font-style: italic;
+  font-size: 0.8rem;
+  color: rgba(236, 216, 198, 0.34);
+  white-space: nowrap;
+}
+
+/* Áreas invisíveis de toque, nas laterais do livro. */
+.toque {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 22%;
+  z-index: 45;
+  background: transparent;
+  border: none;
+}
+
+.toque.esquerda {
+  left: 0;
+}
+.toque.direita {
+  right: 0;
+}
+
+@media (max-width: 720px) {
+  .nav {
+    gap: 12px;
+  }
+  .indicador {
+    min-width: 96px;
+  }
+  .dica {
+    font-size: 0.72rem;
+  }
+}

@@ -1,0 +1,654 @@
+/* ============================================================
+   O livro físico
+   ============================================================ */
+
+.palco-livro {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  perspective: 2800px;
+  perspective-origin: 50% 40%;
+}
+
+.livro {
+  position: relative;
+  transform-style: preserve-3d;
+  width: min(1160px, 92vw);
+  height: min(700px, 78vh);
+  will-change: transform;
+}
+
+.livro[data-modo='single'] {
+  width: min(520px, 94vw);
+  height: min(740px, 80vh);
+}
+
+/* Lombada e volume do miolo. */
+.livro::before {
+  content: '';
+  position: absolute;
+  inset: -14px -18px -22px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, var(--vinho-700), var(--vinho-900));
+  box-shadow: var(--sombra-livro);
+  transform: translateZ(-26px);
+}
+
+.livro[data-modo='single']::before {
+  inset: -10px -12px -16px;
+}
+
+.livro::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 46px;
+  margin-left: -23px;
+  z-index: 12;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(120, 80, 60, 0) 0%,
+    rgba(110, 72, 52, 0.16) 30%,
+    rgba(72, 40, 30, 0.32) 50%,
+    rgba(110, 72, 52, 0.16) 70%,
+    rgba(120, 80, 60, 0) 100%
+  );
+}
+
+.livro[data-modo='single']::after {
+  display: none;
+}
+
+/* ——— Folhas ——— */
+
+.folha {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  overflow: hidden;
+  background: var(--papel, var(--papel-200));
+  backface-visibility: hidden;
+}
+
+.livro[data-modo='single'] .folha {
+  width: 100%;
+}
+
+.folha.esquerda {
+  left: 0;
+  border-radius: 3px 1px 1px 3px;
+  box-shadow: inset -22px 0 34px -26px rgba(70, 40, 30, 0.55);
+}
+
+.folha.direita {
+  right: 0;
+  border-radius: 1px 3px 3px 1px;
+  box-shadow: inset 22px 0 34px -26px rgba(70, 40, 30, 0.55);
+}
+
+.livro[data-modo='single'] .folha.direita {
+  border-radius: 3px;
+  box-shadow: inset 14px 0 30px -26px rgba(70, 40, 30, 0.5);
+}
+
+/* Papel: fibra, manchas, borda gasta. */
+.papel-textura {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(60% 45% at 18% 12%, rgba(196, 150, 118, 0.09), transparent 70%),
+    radial-gradient(45% 40% at 84% 78%, rgba(176, 126, 100, 0.08), transparent 72%),
+    radial-gradient(30% 24% at 62% 30%, rgba(190, 140, 110, 0.05), transparent 70%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/><feColorMatrix type='saturate' values='0'/></filter><rect width='220' height='220' filter='url(%23p)' opacity='0.28'/></svg>");
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+}
+
+/* Luz da cena atravessando a página. */
+.papel-luz {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(75% 60% at 30% 0%, var(--luz, transparent), transparent 70%),
+    linear-gradient(200deg, var(--luz-2, transparent), transparent 55%);
+  transition: background 1.6s var(--curva);
+}
+
+.folha-borda {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(160, 120, 96, 0.14), inset 0 0 60px rgba(150, 105, 80, 0.07);
+}
+
+/* ——— Conteúdo da página ——— */
+
+.pagina {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(28px, 4.2vw, 64px) clamp(26px, 4vw, 62px);
+  color: var(--tinta-700);
+}
+
+.pagina.largura-dupla {
+  width: 200%;
+}
+
+[data-lado='direita'] .pagina.largura-dupla {
+  transform: translateX(-50%);
+}
+
+.livro[data-modo='single'] .pagina.largura-dupla {
+  width: 100%;
+  transform: none;
+}
+
+/* Os blocos de página ocupam toda a folha, para centralizar de verdade. */
+.pagina > .pagina-corpo,
+.pagina > .capitulo-abertura,
+.pagina > .fim-capitulo,
+.pagina > .pagina-futuro,
+.pagina > .cena,
+.pagina > .dois-anos,
+.pagina > .carta {
+  flex: 1;
+  min-height: 0;
+}
+
+.pagina-corpo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.55em;
+  max-width: 46ch;
+  margin-inline: auto;
+  width: 100%;
+}
+
+.pagina[data-tipo='citacao'] .pagina-corpo,
+.pagina[data-tipo='cena'] .pagina-corpo,
+.pagina[data-tipo='fim-capitulo'] .pagina-corpo,
+.pagina[data-tipo='continua'] .pagina-corpo {
+  text-align: center;
+  gap: 1em;
+}
+
+.pagina-cabecalho {
+  font-family: var(--serif-titulo);
+  font-size: clamp(0.62rem, 1vw, 0.72rem);
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--vermelho-500);
+  opacity: 0.75;
+  text-align: center;
+  margin-bottom: 0.4em;
+}
+
+.pagina-cabecalho::after {
+  content: '';
+  display: block;
+  width: 34px;
+  height: 1px;
+  margin: 0.9em auto 0;
+  background: linear-gradient(90deg, transparent, var(--ouro), transparent);
+  opacity: 0.6;
+}
+
+.linha {
+  font-family: var(--serif-texto);
+  font-size: clamp(1rem, 1.35vw, 1.16rem);
+  line-height: 1.72;
+  margin: 0;
+  color: var(--tinta-700);
+}
+
+.linha.abertura {
+  font-size: clamp(1.1rem, 1.6vw, 1.34rem);
+  color: var(--tinta-900);
+}
+
+.linha.abertura::first-letter {
+  font-family: var(--serif-titulo);
+  font-size: 2.4em;
+  float: left;
+  line-height: 0.82;
+  padding: 0.1em 0.1em 0 0;
+  color: var(--vermelho-500);
+}
+
+.linha.destaque {
+  font-family: var(--serif-titulo);
+  font-size: clamp(1.46rem, 2.7vw, 2.15rem);
+  line-height: 1.24;
+  font-weight: 400;
+  color: var(--vinho-700);
+  text-align: center;
+  margin: 0.5em 0;
+  letter-spacing: 0.005em;
+}
+
+.linha.sussurro {
+  font-size: clamp(0.92rem, 1.2vw, 1.02rem);
+  font-style: italic;
+  color: var(--tinta-300);
+  letter-spacing: 0.01em;
+}
+
+.linha.manuscrito {
+  font-family: var(--manuscrita);
+  font-size: clamp(1.4rem, 2.2vw, 1.75rem);
+  color: var(--vermelho-500);
+  transform: rotate(-1.4deg);
+  line-height: 1.3;
+}
+
+.linha.fala {
+  font-size: clamp(1.02rem, 1.4vw, 1.2rem);
+  color: var(--tinta-900);
+  padding-left: 1.1em;
+  border-left: 1px solid rgba(140, 27, 40, 0.2);
+  line-height: 1.68;
+}
+
+.linha.item {
+  font-family: var(--serif-titulo);
+  font-size: clamp(1.05rem, 1.5vw, 1.24rem);
+  letter-spacing: 0.06em;
+  color: var(--tinta-900);
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ——— Título de capítulo ——— */
+
+.capitulo-abertura {
+  height: 100%;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: 1.2rem;
+  padding: 2rem;
+}
+
+.capitulo-numero {
+  font-family: var(--serif-titulo);
+  font-size: clamp(0.72rem, 1.1vw, 0.84rem);
+  letter-spacing: 0.56em;
+  text-transform: uppercase;
+  color: var(--vermelho-400);
+}
+
+.capitulo-titulo {
+  font-family: var(--serif-titulo);
+  font-weight: 300;
+  font-size: clamp(1.9rem, 4.4vw, 3.5rem);
+  line-height: 1.12;
+  color: var(--vinho-700);
+  margin: 0;
+  max-width: 18ch;
+  margin-inline: auto;
+  text-wrap: balance;
+}
+
+.capitulo-subtitulo {
+  font-family: var(--serif-texto);
+  font-style: italic;
+  font-size: clamp(0.95rem, 1.5vw, 1.15rem);
+  color: var(--tinta-300);
+  max-width: 34ch;
+  margin-inline: auto;
+  text-wrap: balance;
+}
+
+.filete {
+  width: 120px;
+  height: 1px;
+  margin: 0.4rem auto;
+  background: linear-gradient(90deg, transparent, var(--ouro), transparent);
+  opacity: 0.7;
+}
+
+/* ——— Cenas especiais ——— */
+
+.cena-titulo {
+  font-family: var(--serif-titulo);
+  font-weight: 300;
+  font-size: clamp(1.8rem, 4vw, 3.1rem);
+  line-height: 1.16;
+  color: var(--vinho-700);
+  text-align: center;
+  margin: 0 0 0.6em;
+  text-wrap: balance;
+}
+
+.dois-anos {
+  display: grid;
+  place-content: center;
+  height: 100%;
+  gap: 1.6rem;
+}
+
+.dois-anos-numero {
+  font-family: var(--serif-titulo);
+  font-size: clamp(4rem, 15vw, 11rem);
+  font-weight: 300;
+  line-height: 0.9;
+  color: var(--papel-sombra);
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.estacoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.8rem;
+  justify-content: center;
+  font-family: var(--serif-titulo);
+  font-size: clamp(0.66rem, 1vw, 0.76rem);
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--tinta-200);
+}
+
+.calendario {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 5px;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.calendario span {
+  height: 5px;
+  background: var(--papel-sombra);
+  opacity: 0.55;
+  border-radius: 1px;
+}
+
+/* ——— Montagem de memórias ——— */
+
+.montagem {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em 1.1em;
+  justify-content: center;
+  align-content: center;
+  max-width: 60ch;
+  margin-inline: auto;
+}
+
+.montagem-item {
+  font-family: var(--serif-titulo);
+  font-size: clamp(0.95rem, 1.6vw, 1.3rem);
+  color: var(--tinta-500);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.montagem-item::after {
+  content: '·';
+  margin-left: 1.1em;
+  color: var(--rosa-queimado);
+  opacity: 0.6;
+}
+
+.montagem-item:last-child::after {
+  content: '';
+}
+
+/* ——— Fotografias ——— */
+
+.fotos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(14px, 2vw, 26px);
+  justify-content: center;
+  margin: 1.4em 0 0.4em;
+}
+
+.foto {
+  position: relative;
+  background: #fffdf9;
+  padding: 10px 10px 34px;
+  box-shadow: var(--sombra-foto);
+  width: clamp(120px, 15vw, 172px);
+  transition: transform var(--medio) var(--curva);
+}
+
+.foto[data-estilo='impressa'] {
+  padding: 6px;
+  border-radius: 1px;
+}
+
+.foto[data-estilo='envelope'] {
+  background: var(--papel-300);
+  padding: 14px 12px 30px;
+}
+
+.foto-area {
+  aspect-ratio: 4 / 5;
+  background:
+    linear-gradient(140deg, rgba(178, 120, 100, 0.16), rgba(120, 70, 66, 0.1)),
+    repeating-linear-gradient(45deg, rgba(150, 100, 90, 0.05) 0 6px, transparent 6px 12px);
+  display: grid;
+  place-items: center;
+  color: var(--tinta-200);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 6px;
+}
+
+.foto-area img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.foto-legenda {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 9px;
+  text-align: center;
+  font-family: var(--manuscrita);
+  font-size: 1.05rem;
+  color: var(--tinta-500);
+}
+
+.foto[data-estilo='fita']::before,
+.foto[data-estilo='fita']::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  width: 52px;
+  height: 20px;
+  background: rgba(228, 214, 188, 0.72);
+  box-shadow: 0 1px 2px rgba(80, 50, 40, 0.18);
+}
+
+.foto[data-estilo='fita']::before {
+  left: -14px;
+  transform: rotate(-32deg);
+}
+
+.foto[data-estilo='fita']::after {
+  right: -14px;
+  transform: rotate(32deg);
+}
+
+/* ——— Carta ——— */
+
+.carta {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  margin: auto;
+  width: 100%;
+  max-width: 44ch;
+  padding: clamp(20px, 3vw, 34px) clamp(18px, 2.6vw, 30px);
+  background: linear-gradient(170deg, #fffcf6 0%, var(--papel-200) 78%, var(--papel-300) 100%);
+  box-shadow:
+    0 1px 2px rgba(90, 58, 44, 0.12),
+    0 14px 30px rgba(80, 45, 36, 0.12);
+  border-radius: 1px;
+}
+
+.carta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(160, 120, 96, 0.12);
+}
+
+.carta-conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55em;
+  width: 100%;
+}
+
+/* Canto dobrado. */
+.carta-canto {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 26px;
+  height: 26px;
+  background: linear-gradient(135deg, transparent 50%, rgba(216, 200, 182, 0.9) 50%);
+  box-shadow: -1px -1px 2px rgba(90, 58, 44, 0.12);
+}
+
+/* ——— Gatos ——— */
+
+.gato {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  color: var(--vinho-700);
+}
+
+.gato[data-spot='inferior-direito'] {
+  right: clamp(18px, 3vw, 40px);
+  bottom: clamp(16px, 2.6vw, 34px);
+}
+.gato[data-spot='inferior-esquerdo'] {
+  left: clamp(18px, 3vw, 40px);
+  bottom: clamp(16px, 2.6vw, 34px);
+}
+.gato[data-spot='superior-direito'] {
+  right: clamp(18px, 3vw, 40px);
+  top: clamp(16px, 2.6vw, 34px);
+}
+.gato[data-spot='superior-esquerdo'] {
+  left: clamp(18px, 3vw, 40px);
+  top: clamp(16px, 2.6vw, 34px);
+}
+.gato[data-spot='margem'] {
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: clamp(14px, 2.2vw, 26px);
+}
+
+/* ——— Folha virando ——— */
+
+.folha-virando {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  z-index: 30;
+  will-change: transform;
+}
+
+.livro[data-modo='single'] .folha-virando {
+  width: 100%;
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+  background: var(--papel, var(--papel-200));
+  box-shadow: 0 0 22px rgba(60, 30, 24, 0.22);
+}
+
+.face.verso {
+  transform: rotateY(180deg);
+}
+
+.face-sombra {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  pointer-events: none;
+}
+
+.face.frente .face-sombra {
+  background: linear-gradient(90deg, rgba(50, 26, 20, 0.42) 0%, rgba(50, 26, 20, 0.06) 26%, transparent 60%);
+}
+
+.face.verso .face-sombra {
+  background: linear-gradient(270deg, rgba(50, 26, 20, 0.42) 0%, rgba(50, 26, 20, 0.06) 26%, transparent 60%);
+}
+
+/* Sombra que a folha em movimento projeta sobre a página de baixo. */
+.sombra-virada {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 50%;
+  z-index: 14;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(40, 20, 16, 0.32), transparent 55%);
+}
+
+.livro[data-modo='single'] .sombra-virada {
+  width: 100%;
+}
+
+/* ——— Poeira no ar ——— */
+
+.poeira {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+}
+
+/* ——— Responsivo ——— */
+
+@media (max-width: 900px) {
+  .pagina {
+    padding: clamp(22px, 6vw, 40px) clamp(20px, 6vw, 36px);
+  }
+  .pagina-corpo {
+    max-width: 38ch;
+  }
+}
+
+@media (max-height: 620px) {
+  .livro {
+    height: 84vh;
+  }
+}
